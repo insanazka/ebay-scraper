@@ -16,7 +16,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// jadi 4 batch
+// membagi request menjadi 4 batch
 function chunkArray(arr, size) {
   return arr.reduce((chunks, item, i) => {
     if (i % size === 0) chunks.push([]);
@@ -45,10 +45,10 @@ ${JSON.stringify(items)}
 
   return JSON.parse(completion.output[0].content[0].text);
 }
-
+// pagination
 app.get('/scrape', async (req, res) => {
   try {
-    const { pages = "1" } = req.query; // contoh: ?pages=1,3,5
+    const { pages = "1", keyword = "nike" } = req.query;
     const pageNumbers = pages.split(',').map(p => parseInt(p.trim(), 10));
 
     const browser = await puppeteer.launch({ headless: true });
@@ -57,8 +57,9 @@ app.get('/scrape', async (req, res) => {
     let finalData = [];
 
     for (const pageNum of pageNumbers) {
-      console.log(`🔍 Mengambil halaman ${pageNum}...`);
-      await page.goto(`https://www.ebay.com.sg/sch/i.html?_nkw=nike&_sacat=0&_from=R40&_trksid=m570.l1313&_pgn=${pageNum}`, {
+      console.log(`Mengambil Data Halaman ${pageNum}...`);
+      console.log(`Mengambil Data Pencarian ${keyword}...`);
+      await page.goto(`https://www.ebay.com.sg/sch/i.html?_nkw=${encodeURIComponent(keyword)}&_sacat=0&_from=R40&_trksid=m570.l1313&_pgn=${pageNum}`, {
         waitUntil: 'networkidle2'
       });
 
@@ -86,19 +87,19 @@ app.get('/scrape', async (req, res) => {
 
     await browser.close();
 
-    // Simpan hasil ke file
+    // simpan hasil ke file
     fs.writeFileSync('output.json', JSON.stringify(finalData, null, 2));
-    console.log(`✅ Data berhasil disimpan ke output.json`);
+    console.log(`Data berhasil disimpan ke output.json`);
 
-    // Kirim JSON sebagai response API
+    // kirim JSON sebagai response API
     res.json(finalData);
 
   } catch (err) {
-    console.error("❌ Terjadi error:", err);
+    console.error("Terjadi error:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server berjalan di http://localhost:${PORT}`);
+  console.log(`Server berjalan di http://localhost:${PORT}`);
 });

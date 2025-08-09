@@ -12,7 +12,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// Fungsi pecah array jadi batch
+// jadi 4 batch
 function chunkArray(arr, size) {
   return arr.reduce((chunks, item, i) => {
     if (i % size === 0) chunks.push([]);
@@ -21,7 +21,7 @@ function chunkArray(arr, size) {
   }, []);
 }
 
-// Fungsi untuk minta deskripsi dari AI
+// deskripsi ai
 async function extractDataWithAI(items) {
   const prompt = `
 Buat deskripsi singkat untuk setiap produk berikut.
@@ -77,7 +77,7 @@ ${JSON.stringify(items)}
 
   try {
     fs.writeFileSync('output.json', JSON.stringify(finalData, null, 2));
-    console.log(`✅ Data berhasil disimpan ke output.json`);
+    console.log(`Data berhasil disimpan ke output.json`);
   } catch (err) {
     console.error("Gagal membuat JSON:", err);
   }
