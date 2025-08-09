@@ -28,11 +28,11 @@ C. Using The API:
 3. The data will be saved in output.json, and the API response will return a JSON array like this:
 	[
   		{
-    			"title": "Nike Air Max",
-    			"price": "$120",
-    			"description": "Stylish and comfortable Nike Air Max shoes for everyday activities."
+    		"title": "Nike Air Max",
+    		"price": "$120",
+    		"description": "Stylish and comfortable Nike Air Max shoes for everyday activities."
   		},
-  		...
+  	    ...
 	]
 
 Technologies Used:
